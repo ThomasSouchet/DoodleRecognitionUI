@@ -3,8 +3,7 @@ import streamlit as st
 import requests
 import os
 import time
-from PIL import ExifTags
-from fastai.vision.core import PILImage
+from PIL import Image, ImageDraw, ExifTags
 
 st.set_page_config(layout="wide")
 
@@ -13,7 +12,7 @@ st.write("# Doodle Recognition: Let’s play Pictionary !")
 st.text("")
 
 # enter here the address of your api
-url = 'http://127.0.0.1:8000/predict/'
+url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
 
 st.write("Real-time Doodle Recognition with Quick, Draw !")
 with st.beta_expander("Click here for more info about the model"):
@@ -34,7 +33,7 @@ st.text("")
 def fix_rotation(file_data):
     # check EXIF data to see if has rotation data from iOS. If so, fix it.
     try:
-        image = PILImage.create(file_data)
+        image = Image.open(file_data)
         for orientation in ExifTags.TAGS.keys():
             if ExifTags.TAGS[orientation]=='Orientation':
                 break
@@ -52,8 +51,6 @@ def fix_rotation(file_data):
         if rot != 0:
             st.write(f"Rotating image {rot} degrees (you're probably on iOS)...")
             image = image.rotate(rot, expand=True)
-            # This step is necessary because image.rotate returns a PIL.Image, not PILImage, the fastai derived class.
-            image.__class__ = PILImage
 
     except (AttributeError, KeyError, IndexError):
         pass  # image didn't have EXIF data
