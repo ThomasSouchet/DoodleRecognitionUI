@@ -1,18 +1,42 @@
 
 import streamlit as st
+import numpy as np
 import requests
 import os
+import base64
 import time
+import json
+from pylab import array
 from PIL import Image, ImageDraw, ExifTags
 
 st.set_page_config(layout="wide")
+
+def load_image(path):
+    with open(path, 'rb') as f:
+        data = f.read()
+        encoded = base64.b64encode(data).decode()
+    return encoded
+
+encoded = load_image('images/preview.jpg')
+
+page_bg_img = f'''
+            <style>
+                body {{
+                    background-image: url("data:image/jpeg;base64,{encoded}");
+                    background-size: cover;
+                }}
+            </style>
+            '''
+
+#st.markdown(page_bg_img, unsafe_allow_html=True)
 
 st.write("# Doodle Recognition: Let’s play Pictionary !")
 
 st.text("")
 
 # enter here the address of your api
-url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
+#url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
+url = 'http://127.0.0.1:8000/predict/'
 
 st.write("Real-time Doodle Recognition with Quick, Draw !")
 with st.beta_expander("Click here for more info about the model"):
@@ -34,6 +58,7 @@ def fix_rotation(file_data):
     # check EXIF data to see if has rotation data from iOS. If so, fix it.
     try:
         image = Image.open(file_data)
+        image = image.convert("RGB")
         for orientation in ExifTags.TAGS.keys():
             if ExifTags.TAGS[orientation]=='Orientation':
                 break
@@ -61,18 +86,23 @@ if file_data is not None:
     with st.spinner('Checking...'):
         # load the image from uploader; fix rotation for iOS devices if necessary
         
-        time.sleep(2)
-
         img = fix_rotation(file_data)
         
-        st.image(img, width=200)
+        st.image(img)
         
-        params = {} #dict()
+        temp_image = str(int(time.time())) + "_" + 'img.jpg'
+        img.save(temp_image)
 
-        response = requests.get(url, params=params)
+        multipart_form_data = { 
+            "inputImage" : (open(temp_image, "rb"))
+        }
 
-        prediction = response.json()
+        response = requests.post(url, files = multipart_form_data, verify=False)
 
-        pred = prediction['Prediction']
+        if os.path.exists(temp_image):
+            os.remove(temp_image)
 
-        st.write(pred)
+        prediction = response.json()['prediction']
+
+        for key, value in prediction.items():
+            st.write(f'{key}: {value} %')
