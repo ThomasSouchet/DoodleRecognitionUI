@@ -1,0 +1,5 @@
+{
+    "server": "https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/",
+    "server_local": "http://127.0.0.1:8000/",
+    "service": "predict/"
+    }

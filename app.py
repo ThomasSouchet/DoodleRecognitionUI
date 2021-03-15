@@ -2,42 +2,27 @@
 import streamlit as st
 import numpy as np
 import requests
-import os
-import base64
-import time
-import json
+from util.ParamsCache import ParamsCache
+from util.WebUtils import image_css, image_html
+from util.ImageUtils import save_temp_image, delete_temp_image
 from pylab import array
 import matplotlib.pyplot as plt
-from PIL import Image, ImageDraw, ExifTags
 
 st.set_page_config(layout="wide")
 
-# def load_image(path):
-#     with open(path, 'rb') as f:
-#         data = f.read()
-#         encoded = base64.b64encode(data).decode()
-#     return encoded
+page_bg_img = f'''
+            <style>
+                .uploadedFile {{
+                    display: none;
+                }}
+            </style>
+            '''
 
-# encoded = load_image('images/preview.jpg')
-
-# page_bg_img = f'''
-#             <style>
-#                 body {{
-#                     background-image: url("data:image/jpeg;base64,{encoded}");
-#                     background-size: cover;
-#                 }}
-#             </style>
-#             '''
-
-#st.markdown(page_bg_img, unsafe_allow_html=True)
+st.markdown(page_bg_img, unsafe_allow_html=True)
 
 st.write("# Doodle Recognition: Let’s play Pictionary !")
 
 st.text("")
-
-# enter here the address of your api
-url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
-#url = 'http://127.0.0.1:8000/predict'
 
 st.write("Real-time Doodle Recognition with Quick, Draw !")
 with st.beta_expander("Click here for more info about the model"):
@@ -80,44 +65,53 @@ st.text("")
 
 if file_data is not None:
     with st.spinner('Checking...'):
-        # load the image from uploader; fix rotation for iOS devices if necessary
         
-        img = Image.open(file_data)
-                
-        temp_image = str(int(time.time())) + "_" + 'img.png'
-        img.save(temp_image)
+        try:
+            temp_image, image_size = save_temp_image(file_data)
+            
+            multipart_form_data = {
+                "inputImage" : (open(temp_image, "rb"))
+            }
 
-        multipart_form_data = {
-            "inputImage" : (open(temp_image, "rb"))
-        }
+            form_data = {
+                "modelName" : model_name,
+                "numClass" : num_class
+            }
 
-        form_data = {
-            "modelName" : model_name,
-            "numClass" : num_class
-        }
-        
-        response = requests.post(url, data = form_data, files = multipart_form_data, verify=False)
+            response = requests.post(
+                        ParamsCache.getInstance().getUrl(),
+                        data = form_data, 
+                        files = multipart_form_data, 
+                        verify=False
+                        )
 
-        if os.path.exists(temp_image):
-            os.remove(temp_image)
+            response_status = response.status_code
+            prediction = response.json()['prediction']
 
-        prediction = response.json()['prediction']
-        values = prediction.values()
-        keys = prediction.keys()
-        keys = [key for key in keys]
-        values = [int(val)/100 for val in values]
+            if response_status == 200:
+                values = prediction.values()
+                keys = prediction.keys()
+                keys = [key for key in keys]
+                values = [int(val)/100 for val in values]
 
-        c1, c2 = st.beta_columns(2)
+                c1, c2 = st.beta_columns(2)
 
-        with c1:
-            st.image(img)
+                with c1:
+                    st.markdown(image_html(image_size, temp_image), unsafe_allow_html=True)
 
-        with c2:     
-            plt.figure(figsize = (4, 4))
-            plt.pie(values, labels = keys,
-                    colors = ['blue','orange','red', 'green', 'yellow'],
-                    pctdistance = 0.7, labeldistance = 1.4,
-                    shadow = False, normalize=False)
-            plt.legend()
-            st.set_option('deprecation.showPyplotGlobalUse', False)
-            st.pyplot()
+                with c2:     
+                    plt.figure(figsize = (4, 4))
+                    plt.pie(values, labels = keys,
+                            colors = ['blue','orange','red', 'green', 'yellow'],
+                            pctdistance = 0.7, labeldistance = 1.4,
+                            shadow = True, normalize=False)
+                    st.set_option('deprecation.showPyplotGlobalUse', False)
+                    st.pyplot()
+            else:
+                st.error(prediction)
+            
+        except Exception as e:
+            st.error(f"An unexpected error occured, please check Streamlit's logs!  \n\n{str(e)}")
+
+        finally:
+            delete_temp_image(temp_image)
