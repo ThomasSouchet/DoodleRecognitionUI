@@ -36,8 +36,8 @@ st.write("# Doodle Recognition: Let’s play Pictionary !")
 st.text("")
 
 # enter here the address of your api
-#url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
-url = 'http://127.0.0.1:8000/predict'
+url = 'https://doodle-recognition-api-x4dwwwxida-ew.a.run.app/predict/'
+#url = 'http://127.0.0.1:8000/predict'
 
 st.write("Real-time Doodle Recognition with Quick, Draw !")
 with st.beta_expander("Click here for more info about the model"):
