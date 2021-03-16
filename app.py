@@ -15,6 +15,23 @@ import matplotlib as mpl
 
 st.set_page_config(layout="wide")
 
+def post(data, files):
+    response = requests.post(
+        ParamsCache.getInstance().getUrl(),
+        data = data, 
+        files = files, 
+        verify=False
+        )
+
+    return response.status_code, response.json()['prediction']
+    
+def get_pred_labels_and_values(prediction):
+    values = prediction.values()
+    keys = prediction.keys()
+    keys = [key for key in keys]
+    values = [int(val)/100 for val in values]
+    return keys, values
+
 hide_streamlit_style = f'''
             <style>
                 #MainMenu {{
@@ -73,8 +90,6 @@ else:
 st.text("")
 
 temp_image = ''
-form_data = ''
-multipart_form_data = ''
 prediction = {}
 
 try:
@@ -88,22 +103,15 @@ try:
 
             with st.spinner('Checking...'):        
 
-                response = requests.post(
-                            ParamsCache.getInstance().getUrl(),
-                            data = get_form_data(model_name, num_class), 
-                            files = get_multipart_form_data(temp_image), 
-                            verify=False
-                            )
-
-                response_status = response.status_code
-                prediction = response.json()['prediction']
+                response_status, prediction = post(
+                                                get_form_data(model_name, num_class),
+                                                get_multipart_form_data(temp_image)
+                                                ) 
 
                 if response_status == 200:
-                    values = prediction.values()
-                    keys = prediction.keys()
-                    keys = [key for key in keys]
-                    values = [int(val)/100 for val in values]
-
+                    
+                    keys, values = get_pred_labels_and_values(prediction)
+                    
                     c3, c4 = st.beta_columns(2)
 
                     with c3:
@@ -151,21 +159,14 @@ try:
 
         with c6:
             if guess:
-                response = requests.post(
-                                ParamsCache.getInstance().getUrl(), 
-                                data = get_form_data(model_name, num_class), 
-                                files = get_multipart_form_data(temp_image), 
-                                verify = False
-                                )
+                response_status, prediction = post(
+                                                get_form_data(model_name, num_class),
+                                                get_multipart_form_data(temp_image)
+                                                ) 
 
-                response_status = response.status_code
-                prediction = response.json()['prediction']
-                
                 if response_status == 200:
-                    values = prediction.values()
-                    keys = prediction.keys()
-                    keys = [key for key in keys]
-                    values = [int(val)/100 for val in values]
+
+                    keys, values = get_pred_labels_and_values(prediction)
 
                     with st.spinner('Hmmm... Let me think :thinking_face:'):
                         time.sleep(1)
@@ -189,6 +190,7 @@ try:
                         time.sleep(0.1)
                     with st.spinner(" Got it ! :raised_hands: :raised_hands:"):
                         time.sleep(1.5)
+                    
                     plt.figure(figsize = (1, 1))
                     cmap = plt.get_cmap("tab20c")
                     outer_colors = cmap(np.arange(5)*4)
