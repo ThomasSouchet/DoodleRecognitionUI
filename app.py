@@ -71,7 +71,7 @@ if file_data is not None:
             }
 
             response = requests.post(
-                        ParamsCache.getInstance().getLocalUrl(),
+                        ParamsCache.getInstance().getUrl(),
                         data = form_data, 
                         files = multipart_form_data, 
                         verify=False
