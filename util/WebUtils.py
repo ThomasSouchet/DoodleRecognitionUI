@@ -33,3 +33,14 @@ def image_html(image_size, temp_image):
                 </div>
             </div>
             """
+
+def get_multipart_form_data(temp_image):
+    return {
+                "inputImage" : (open(temp_image, "rb"))
+            }
+
+def get_form_data(model_name, num_class):
+    return {
+                "modelName" : model_name,
+                "numClass" : num_class
+            }

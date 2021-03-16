@@ -4,7 +4,9 @@ class  ParamsCache:
     
     __instance = None
     params = {}
-    
+    is_doodle = True
+    is_pictionay = False
+
     @staticmethod 
     def getInstance():
         """ Static access method. """
@@ -29,3 +31,13 @@ class  ParamsCache:
 
     def getLocalUrl(self):
         return f"{self.params['server_local']}{self.params['service']}"
+    
+    def getIsDoodle(self):
+        return self.is_doodle
+
+    def getIsPictionary(self):
+        return self.is_pictionay
+
+    def setCurrentPage(self, is_doodle, is_pictionay):
+        self.is_doodle = is_doodle
+        self.is_pictionay = is_pictionay
