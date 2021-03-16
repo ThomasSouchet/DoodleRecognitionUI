@@ -31,3 +31,6 @@ def save_temp_image_from_canvas(output):
 
 def get_temp_image_name():
     return f'{str(int(time.time()))}_img.jpg'
+
+def get_title_img():
+    return Image.open('./images/Title.png')
