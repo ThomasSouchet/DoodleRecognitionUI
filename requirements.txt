@@ -1,3 +1,4 @@
 streamlit
 matplotlib
+dataclasses
 streamlit-drawable-canvas
