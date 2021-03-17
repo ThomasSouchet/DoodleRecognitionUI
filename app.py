@@ -6,7 +6,7 @@ import home
 
 st.set_page_config(
     layout="wide",
-    page_title = "Scketching with DL",
+    page_title = "Sketching with DL",
     page_icon = ":fire:",
     initial_sidebar_state="expanded",
     )

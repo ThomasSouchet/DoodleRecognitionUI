@@ -102,7 +102,7 @@ def get_form_data(model_name, num_class):
 
 def post_(data, files):
     response = requests.post(
-        ParamsCache.getInstance().getUrl(),
+        ParamsCache.getInstance().getLocalUrl(),
         data = data, 
         files = files, 
         verify=False

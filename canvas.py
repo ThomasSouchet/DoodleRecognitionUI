@@ -1,6 +1,6 @@
-import time
+import time, sys
 import streamlit as st
-from util import WebUtils, ImageUtils
+from util import WebUtils, ImageUtils, ExceptionUtils
 from streamlit_drawable_canvas import st_canvas
 
 def canvas() :
@@ -79,8 +79,9 @@ def canvas() :
 
                 st.markdown("<img src='https://media.giphy.com/media/IzitAtI5TJQEwWohcc/giphy.gif' width='400px' border='0px'/>", unsafe_allow_html=True)
                 st.header("Start drawing here")
+
     except Exception as e:
-        st.error(f"An unexpected error occured, please check Streamlit's logs!  \n\n{str(e)}")
+        st.error(ExceptionUtils.exception_process_display(sys.exc_info()))
 
     finally:
         ImageUtils.delete_temp_image(temp_image)
