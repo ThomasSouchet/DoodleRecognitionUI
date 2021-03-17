@@ -71,9 +71,12 @@ def canvas() :
                     with st.spinner(" Got it ! :raised_hands: :raised_hands:"):
                         time.sleep(1.5)
 
-                st.write(WebUtils.build_graph(keys, values))
-            else :
+                    st.write(WebUtils.build_graph(keys, values))
 
+                else:
+                    st.error(prediction)
+
+            else:
                 st.title('')
                 st.title('')
 
