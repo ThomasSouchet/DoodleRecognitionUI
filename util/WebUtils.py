@@ -53,6 +53,7 @@ def uploadpic_css():
                     flex: 1 1 30% !important;
                     width: 2px;
                     padding-left: 0px;
+                    padding-top: 80px;
                     }}
             </style>
             '''
@@ -67,10 +68,10 @@ def canvas_css():
                 .css-4kisie {{
                     flex: 1 1 30% !important;
                     width: 2px;
-                    padding-left: 0px;
+                    padding-left: 0px;                    
                     }}
-                .css-3mnucz {{
-                    font-size : x-large !important;
+                .css-3mnucz > p {{
+                    font-size : 30px !important;
                     }}
                 h2 {{
                     font-weight: 550;
@@ -120,7 +121,10 @@ def get_pred_labels_and_values(prediction):
     return keys, values
 
 def build_graph(keys, values):
-    fig = ig = go.Figure(data=[go.Pie(labels=keys, values=values, pull=[0.2, 0, 0, 0])])
+    fig = ig = go.Figure(
+                        data=[go.Pie(labels=keys, values=values, pull=[0.2, 0, 0, 0])],
+                        layout=go.Layout(height=450, width=600)
+                        )
     fig.update_traces(hole=.4, hoverinfo="label+percent")
     fig.update_layout(annotations=[dict(text=' ', x=0.18, y=0.5, font_size=20, showarrow=False)])
     return fig

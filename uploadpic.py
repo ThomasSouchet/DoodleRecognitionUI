@@ -60,7 +60,7 @@ def uploadpic():
 
                     with c1:
                         st.markdown(WebUtils.image_html(image_size, temp_image), unsafe_allow_html=True)
-                    
+
                     with c2:
                         st.write(WebUtils.build_graph(keys, values))
                 else:

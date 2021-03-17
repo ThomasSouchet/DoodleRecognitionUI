@@ -13,8 +13,6 @@ def canvas() :
         st.markdown(WebUtils.canvas_css(), unsafe_allow_html=True)
 
         st.image(ImageUtils.get_title_img())
-        st.title(' ')
-        st.title(' ')
 
         model_name = 'models_model_V1_DPoint_20K_NCLass_80.h5'
         num_class = 80
@@ -76,7 +74,7 @@ def canvas() :
                 st.write(WebUtils.build_graph(keys, values))
             else :
 
-                st.title("")
+                st.title('')
                 st.title('')
 
                 st.markdown("<img src='https://media.giphy.com/media/IzitAtI5TJQEwWohcc/giphy.gif' width='400px' border='0px'/>", unsafe_allow_html=True)
