@@ -5,7 +5,14 @@ from streamlit_drawable_canvas import st_canvas
 
 def canvas() :
 
-    temp_image = ''
+    ALL_CAT_KEY = '🎲 All categories' 
+    ANIMALS_KEY = '🐒 Animals'
+    FOODS_KEY = '🍕 Foods'
+    TRANSPORTS_KEY = '🚍 Means of transport'
+    OBJECT_KEY = '🌂 Object'
+    EMPTY_SPACE_KEY = ''
+
+    temp_image = EMPTY_SPACE_KEY
     prediction = {}
 
     try:
@@ -14,8 +21,41 @@ def canvas() :
 
         st.image(ImageUtils.get_title_img())
 
-        model_name = 'models_model_V1_DPoint_20K_NCLass_80.h5'
-        num_class = 80
+        st.text(EMPTY_SPACE_KEY)
+
+        model = st.radio(
+                            "Let's play with :", 
+                            ( 
+                                ALL_CAT_KEY, 
+                                ANIMALS_KEY,
+                                FOODS_KEY,
+                                TRANSPORTS_KEY,
+                                OBJECT_KEY
+                            )
+                        )
+        
+        st.write(model)
+
+        model_name = EMPTY_SPACE_KEY
+        num_class = EMPTY_SPACE_KEY
+
+        if model == ANIMALS_KEY:
+            model_name = 'models_Animal_model.h5'
+            num_class = 'animals'
+        elif model == FOODS_KEY:
+            model_name = 'models_Food_model.h5'
+            num_class = 'food'
+        elif model == TRANSPORTS_KEY:
+            model_name = 'models_Transport_model.h5'
+            num_class = 'transport'
+        elif model == OBJECT_KEY:
+            model_name = 'models_Object_model.h5'
+            num_class = 'object'
+        else:
+            model_name = 'models_model_V1_DPoint_20K_NCLass_80.h5'
+            num_class = '80'
+
+        st.text(EMPTY_SPACE_KEY)
 
         c1, c2 = st.beta_columns(2)
         with c1:
@@ -77,8 +117,8 @@ def canvas() :
                     st.error(prediction)
 
             else:
-                st.title('')
-                st.title('')
+                st.title(EMPTY_SPACE_KEY)
+                st.title(EMPTY_SPACE_KEY)
 
                 st.markdown("<img src='https://media.giphy.com/media/IzitAtI5TJQEwWohcc/giphy.gif' width='400px' border='0px'/>", unsafe_allow_html=True)
                 st.header("Start drawing here")

@@ -12,12 +12,15 @@ def uploadpic():
     FOODS_KEY = '🍕 Foods'
     TRANSPORTS_KEY = '🚍 Means of transport'
     OBJECT_KEY = '🌂 Object'
+    EMPTY_SPACE_KEY = ''
     
     try:
 
         st.markdown(WebUtils.uploadpic_css(), unsafe_allow_html=True)
 
-        st.text("")
+        st.image(ImageUtils.get_title_img())
+
+        st.text(EMPTY_SPACE_KEY)
 
         model = st.radio(
                             "Let's play with :", 
@@ -29,10 +32,11 @@ def uploadpic():
                                 OBJECT_KEY
                             )
                         )
+        
         st.write(model)
 
-        model_name = ''
-        num_class = ''
+        model_name = EMPTY_SPACE_KEY
+        num_class = EMPTY_SPACE_KEY
 
         if model == ANIMALS_KEY:
             model_name = 'models_Animal_model.h5'
@@ -47,10 +51,10 @@ def uploadpic():
             model_name = 'models_Object_model.h5'
             num_class = 'object'
         else:
-            model_name = 'models_model_V1_DPoint_60K_NCLass_345.h5'
-            num_class = '345'
-
-        st.text("")
+            model_name = 'models_model_V1_DPoint_20K_NCLass_80.h5'
+            num_class = '80'
+                
+        st.text(EMPTY_SPACE_KEY)
 
         file_data = st.file_uploader("Select an image", type=["jpg", "jpeg", "png"])
 
