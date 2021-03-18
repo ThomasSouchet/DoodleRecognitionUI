@@ -46,9 +46,6 @@ def uploadpic_css():
                 footer {{
                     visibility: hidden;
                     }}
-                .uploadedFile {{
-                    display: none;
-                    }}
                 .css-4kisie {{
                     flex: 1 1 30% !important;
                     width: 2px;
