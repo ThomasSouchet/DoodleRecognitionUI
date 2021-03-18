@@ -13,7 +13,8 @@ Doodle Recognition UI
 # Heroku commands to build UI and deploy it on Heroku
 
 - heroku login
-- heroku apps:destroy --app=doodle-recognition --confirm doodle-recognition
-- heroku create doodle-recognition --region eu
+- *optional:* heroku apps:destroy --app=doodle-recognition --confirm doodle-recognition
+- *optional:* heroku create doodle-recognition --region eu
 - git push heroku master
-- heroku ps:scale web=1
+- *Start the application on Heroku:* heroku ps:scale web=1
+- *Stop the application on Heroku:* heroku ps:scale web=0
